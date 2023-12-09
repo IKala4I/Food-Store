@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {UserService} from '../../../services/user.service';
 import {Router} from '@angular/router';
 import {Location} from '@angular/common';
-import {User} from '../../../shared/models/User';
 
 @Component({
   selector: 'app-login-page',
@@ -13,7 +12,6 @@ import {User} from '../../../shared/models/User';
 export class LoginPageComponent implements OnInit {
   loginForm!: FormGroup;
   isSubmitted = false;
-  returnUrl = '/';
 
   constructor(private formBuilder: FormBuilder, private userService: UserService,
               private location: Location, private router: Router) {
