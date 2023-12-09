@@ -1,8 +1,8 @@
 <app-search></app-search>
 <app-tags></app-tags>
 <app-not-found
-[visible]="!foods || !foods.length"
-resetLinkText="Reset Search"></app-not-found>
+  [visible]="!foods || !foods.length"
+  resetLinkText="Reset Search"></app-not-found>
 <ul>
   <li *ngFor="let food of foods">
     <a routerLink="/food/{{food.id}}">
@@ -15,8 +15,7 @@ resetLinkText="Reset Search"></app-not-found>
           ❤
         </span>
         <div class="stars">
-          <div class="starrating"></div>
-          <!-- stars -->
+          <star-rating [stars]="food.stars"></star-rating>
         </div>
         <div class="product-item-footer">
           <div class="origins">

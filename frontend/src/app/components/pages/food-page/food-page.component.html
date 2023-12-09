@@ -14,7 +14,7 @@
       </span>
     </div>
     <div class="rating">
-      <div class="starrating"></div>
+      <star-rating [stars]="food.stars" [size]="1.8"></star-rating>
     </div>
     <div class="origins">
       <span *ngFor="let origin of food.origins">
