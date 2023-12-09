@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {
   icon,
   LatLng,
@@ -15,11 +15,11 @@ import {LocationService} from '../../../services/location.service';
 import {Order} from '../../../shared/models/Order';
 
 @Component({
-  selector: 'map',
+  selector: 'location-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnChanges {
   private readonly MARKER_ICON = icon({
     iconUrl:
       'https://res.cloudinary.com/foodmine/image/upload/v1638842791/map/marker_kbua9q.png',
@@ -30,6 +30,7 @@ export class MapComponent implements OnInit {
   private readonly DEFAULT_LATLNG: LatLngTuple = [13.75, 21.62];
 
   @Input() order!: Order;
+  @Input() readonly: boolean = false;
 
   @ViewChild('map', {static: true}) mapRef!: ElementRef;
 
@@ -39,8 +40,13 @@ export class MapComponent implements OnInit {
   constructor(private locationService: LocationService) {
   }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    if (!this.order)
+      return;
     this.initializeMap();
+
+    if (this.readonly && this.addressLatLng)
+      this.showLocationOnReadonlyMode();
   }
 
   initializeMap(): void {
@@ -56,6 +62,22 @@ export class MapComponent implements OnInit {
     this.map.on('click', (e: LeafletMouseEvent) => {
       this.setMarker(e.latlng);
     });
+  }
+
+  showLocationOnReadonlyMode() {
+    const map = this.map;
+    this.setMarker(this.addressLatLng);
+    map.setView(this.addressLatLng, this.MARKER_ZOOM_LEVEL);
+
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
+    map.boxZoom.disable();
+    map.keyboard.disable();
+    map.off('click');
+    map.tap?.disable();
+    this.currentMarker.dragging?.disable();
   }
 
   findMyLocation(): void {
@@ -86,8 +108,15 @@ export class MapComponent implements OnInit {
   }
 
   set addressLatLng(latlng: LatLng) {
+    if (!latlng.lat.toFixed)
+      return;
+
     latlng.lat = parseFloat(latlng.lat.toFixed(8));
     latlng.lng = parseFloat(latlng.lng.toFixed(8));
     this.order.addressLatLng = latlng;
+  }
+
+  get addressLatLng(): LatLng {
+    return this.order.addressLatLng!;
   }
 }
