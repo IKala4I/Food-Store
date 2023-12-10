@@ -29,7 +29,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-export const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
   console.log("Website served on http://localhost:" + port);
