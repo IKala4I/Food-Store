@@ -5,6 +5,7 @@ import foodRouter from './routers/food.router';
 import userRouter from './routers/user.router';
 import orderRouter from './routers/order.router';
 import {dbConnect} from './configs/database.config';
+import path from 'path';
 
 dotenv.config();
 
@@ -22,6 +23,11 @@ app.use("/api/foods", foodRouter);
 app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
 
+app.use(express.static('public'));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname,'public', 'index.html'))
+})
 
 const port = 5000;
 app.listen(port, () => {
